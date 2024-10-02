@@ -1,0 +1,27 @@
+.error-wrapper {
+    text-align: center;
+    margin-bottom: 80px;
+    margin-top: 60px;
+  }
+  
+  .error-subtitle {
+    font-size: 30px;
+    color: #070101;
+    margin: 130px;
+  }
+  .error-image {
+    width: 531px;
+  }
+  .changement-pages a {
+    font-family: "Montserrat";
+    font-size: 18px;
+    text-align: center; /* Pour centrer le texte */
+    color: black;
+    margin-bottom: 10px;
+  }
+  @media only screen and (max-width: 750px) {
+    .error-image {
+      width: 250px;
+    }
+  }
+  
