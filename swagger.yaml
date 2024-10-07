@@ -11,23 +11,12 @@ schemes:
 paths:
   /transactions:
     get:
+      security:
+        - Bearer: []
       tags:
         - Transactions
       summary: Get all transactions for the current month
-      description: API for retrieving all transactions for the current month. You can filter transactions with query parameters for the date range.
-      parameters:
-        - in: query
-          name: startDate
-          description: Start date of the month in ISO format (optional)
-          required: false
-          type: string
-          format: date
-        - in: query
-          name: endDate
-          description: End date of the month in ISO format (optional)
-          required: false
-          type: string
-          format: date
+      description: API for retrieving all transactions for the current month.
       produces:
         - application/json
       responses:
@@ -41,8 +30,11 @@ paths:
           description: Invalid Fields
         '500':
           description: Internal Server Error
+
   /transactions/{id}:
     get:
+      security:
+        - Bearer: []
       tags:
         - Transactions
       summary: Get detailed information about a transaction
@@ -64,36 +56,11 @@ paths:
           description: Invalid Fields
         '500':
           description: Internal Server Error
+
   /transactions/{id}/extra-info:
-    post:
-      tags:
-        - Transactions
-      summary: Add extra information to a transaction
-      description: API for adding new information to an existing transaction
-      parameters:
-        - in: path
-          name: id
-          description: The unique identifier of the transaction
-          required: true
-          type: integer
-        - in: body
-          name: body
-          description: Extra information payload
-          required: true
-          schema:
-            $ref: '#/definitions/ExtraInfo'
-      produces:
-        - application/json
-      responses:
-        '200':
-          description: Extra information added successfully
-          schema:
-            $ref: '#/definitions/TransactionExtraInfoResponse'
-        '400':
-          description: Invalid Fields
-        '500':
-          description: Internal Server Error
     put:
+      security:
+        - Bearer: []
       tags:
         - Transactions
       summary: Update extra information for a transaction
@@ -116,17 +83,63 @@ paths:
         '200':
           description: Extra information updated successfully
           schema:
-            $ref: '#/definitions/TransactionExtraInfoResponse'
+            type: object
+            properties:
+              montantCompte:
+                type: number
+                format: float
+                example: 2500.75
         '400':
           description: Invalid Fields
         '500':
           description: Internal Server Error
-    delete:
-      tags:
-        - Transactions
-      summary: Delete extra information from a transaction
-      description: API for deleting extra information from a transaction
-      parameters:
-        - in: path
-          name: id
-          description: The unique identifier 
+
+definitions:
+  Transaction:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 123
+      montant:
+        type: number
+        format: float
+        example: 500.75
+      description:
+        type: string
+        example: 'Payment for services'
+
+  TransactionDetails:
+    type: object
+    properties:
+      id:
+        type: integer
+        example: 123
+      montant:
+        type: number
+        format: float
+        example: 500.75
+      description:
+        type: string
+        example: 'Payment for services'
+
+  ExtraInfo:
+    type: object
+    properties:
+      commentaire:
+        type: string
+        example: 'This is an additional comment'
+
+  TransactionExtraInfoResponse:
+    type: object
+    properties:
+      montantCompte:
+        type: number
+        format: float
+        example: 2500.75
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
