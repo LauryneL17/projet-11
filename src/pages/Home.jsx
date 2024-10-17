@@ -6,7 +6,7 @@ import moneyIcon from "../assets/icon-money-min.png";
 import securityIcon from "../assets/icon-security-min.png";
 
 function Home() {
-  const user = useSelector((state) => state.auth.user);  // Récupération des informations utilisateur dans Redux
+  const user = useSelector((state) => state.auth.user);  
 
   return (
     <div>
@@ -14,11 +14,11 @@ function Home() {
         <div className="hero">
           <section className="hero-content">
             <h2 className="sr-only">Promoted Content</h2>
-            {user ? (  // Vérifie si l'utilisateur est connecté
+            {user ? (  
               <h2>Welcome back, {user.firstName} {user.lastName}!</h2>
               
             ) : (
-              <h2>Welcome to Argent Bank!</h2>  // Affichage par défaut si aucun utilisateur n'est connecté
+              <h2>Welcome to Argent Bank!</h2>  
             )}
             <p className="subtitle">No fees.</p>
             <p className="subtitle">No minimum deposit.</p>

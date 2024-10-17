@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';  
 import { getUser } from '../redux/action';  
-import axios from 'axios'; // Import axios
+import axios from 'axios'; 
 import '../styles/styles.css';
 
 function Users() {
@@ -12,9 +12,8 @@ function Users() {
   const dispatch = useDispatch();  
   const navigate = useNavigate();
   const token = useSelector(state => state.auth.token);
-  const userData = useSelector(state => state.auth.user);  // Get user info from Redux
+  const userData = useSelector(state => state.auth.user);  
 
-  // Effect to navigate to sign-in if no user data is found
   useEffect(() => {
     if (!userData) {
       setError("Aucune donnée utilisateur trouvée. Veuillez vous connecter.");
@@ -22,19 +21,19 @@ function Users() {
     }
   }, [navigate, userData]);
 
-  // Function to activate edit mode
+ 
   const handleEditName = () => {
     setIsEditing(true);
     setNewNickname(userData?.userName || '');
   };
 
-  // Function to cancel editing
+ 
   const handleCancel = () => {
     setIsEditing(false);
     setNewNickname('');
   };
 
-  // Function to save the new nickname
+  
   const handleSave = async () => {
     if (!token) {
       setError("Token non trouvé, veuillez vous reconnecter.");
@@ -50,7 +49,7 @@ function Users() {
         },
       });
 
-      // Update the username in Redux after modification
+
       dispatch(getUser(userData.firstName, userData.lastName, newNickname));
       setIsEditing(false);
       setNewNickname('');
@@ -89,7 +88,7 @@ function Users() {
         </div>
         <h2 className="sr-only">Accounts</h2>
 
-        {/* User's bank accounts */}
+        
         <section className="account">
           <div className="account-content-wrapper">
             <h3 className="account-title">Argent Bank Checking (x8349)</h3>

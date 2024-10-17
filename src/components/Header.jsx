@@ -4,11 +4,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../redux/action';  
 import '../styles/styles.css';
 import logo from '../assets/logo-min.png';
-import PersonIcon from '@mui/icons-material/Person';  // Import de l'icône
+import PersonIcon from '@mui/icons-material/Person';  
 
 const Header = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();  // Initialisation de useNavigate => redirection
+  const navigate = useNavigate();  
   const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user); 
 
@@ -34,11 +34,11 @@ const Header = () => {
           <span className="sr-only">Argent Bank</span>
         </Link>
 
-        {/* Affiche l'icône et le nom de l'utilisateur uniquement si user et user.userName existent */}
+       
         {user && user.userName && (
           <Link className="main-nav-item" to="/users">
-            <PersonIcon /> {/* Icône de bonhomme */}
-            {user.userName}  {/* Nom d'utilisateur */}
+            <PersonIcon /> 
+            {user.userName} 
           </Link>
         )}
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
+import React, { useState, useEffect, useCallback } from 'react'; 
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';  
@@ -12,7 +12,7 @@ function SignIn() {
   const navigate = useNavigate(); 
   const dispatch = useDispatch();  
 
-  // Define fetchUserData with useCallback
+
   const fetchUserData = useCallback(async (token) => {
     try {
       const response = await axios.post('http://localhost:3001/api/v1/user/profile', {}, {
@@ -23,22 +23,22 @@ function SignIn() {
 
       const { firstName, lastName, userName } = response.data.body;
 
-      // Dispatch the action to save user data in Redux
+     
       dispatch(getUser(firstName, lastName, userName));
       navigate('/users');
       
     } catch (error) {
       setError('Erreur lors de la récupération des données utilisateur.');
-      navigate('/signin'); // Navigate back to sign-in if fetching fails
+      navigate('/signin'); 
     }
   }, [dispatch, navigate]);
 
-  // Check if the token exists in localStorage on component mount
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       dispatch(login(token));
-      fetchUserData(token); // Fetch user data after login
+      fetchUserData(token); 
     }
   }, [dispatch, fetchUserData]);
 
@@ -51,16 +51,16 @@ function SignIn() {
         password,
       });
 
-      // Get the token and user from the response
+      
       const { token, user } = response.data.body;
 
-      // Store the token in localStorage
+   
       localStorage.setItem('token', token);
 
-      // Dispatch the action to save the token and user in Redux
+    
       dispatch(login(token, user));
 
-      // Fetch user data after successful login
+      
       await fetchUserData(token);
     } catch (error) {
       setError('Erreur de connexion. Veuillez vérifier vos informations.');
