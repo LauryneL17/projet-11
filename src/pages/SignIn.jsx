@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Import useCallback
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';  
-import { login } from '../redux/action';  
+import { login, getUser } from '../redux/action';  
 
 function SignIn() {
   const [email, setEmail] = useState('');
@@ -12,15 +12,35 @@ function SignIn() {
   const navigate = useNavigate(); 
   const dispatch = useDispatch();  
 
-  // Vérifier si le token existe dans localStorage au montage du composant
+  // Define fetchUserData with useCallback
+  const fetchUserData = useCallback(async (token) => {
+    try {
+      const response = await axios.post('http://localhost:3001/api/v1/user/profile', {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const { firstName, lastName, userName } = response.data.body;
+
+      // Dispatch the action to save user data in Redux
+      dispatch(getUser(firstName, lastName, userName));
+      navigate('/users');
+      
+    } catch (error) {
+      setError('Erreur lors de la récupération des données utilisateur.');
+      navigate('/signin'); // Navigate back to sign-in if fetching fails
+    }
+  }, [dispatch, navigate]);
+
+  // Check if the token exists in localStorage on component mount
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      // Si le token existe, restaurer l'utilisateur et rediriger vers /users
-      dispatch(login(token)); // Supposons que l'action login peut se faire avec uniquement le token
-      navigate('/users');
+      dispatch(login(token));
+      fetchUserData(token); // Fetch user data after login
     }
-  }, [dispatch, navigate]);
+  }, [dispatch, fetchUserData]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -31,17 +51,17 @@ function SignIn() {
         password,
       });
 
-      // Récupérer le token et l'utilisateur depuis la réponse
+      // Get the token and user from the response
       const { token, user } = response.data.body;
 
-      // Stocker le token dans localStorage
+      // Store the token in localStorage
       localStorage.setItem('token', token);
 
-      // Stocker le token et l'utilisateur dans Redux
+      // Dispatch the action to save the token and user in Redux
       dispatch(login(token, user));
 
-      // Redirection vers la page des utilisateurs
-      navigate('/users');
+      // Fetch user data after successful login
+      await fetchUserData(token);
     } catch (error) {
       setError('Erreur de connexion. Veuillez vérifier vos informations.');
     }

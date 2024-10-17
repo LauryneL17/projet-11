@@ -15,7 +15,7 @@
   .changement-pages a {
     font-family: "Montserrat";
     font-size: 18px;
-    text-align: center; /* Pour centrer le texte */
+    text-align: center; 
     color: black;
     margin-bottom: 10px;
   }

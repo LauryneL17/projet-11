@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useSelector } from 'react-redux';  
+import { useDispatch, useSelector } from 'react-redux';  
+import { getUser } from '../redux/action';  // Importer l'action getUser
 import '../styles/styles.css';
 
 function Users() {
-  const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [newNickname, setNewNickname] = useState('');
   const [error, setError] = useState('');
+  const dispatch = useDispatch();  // Initialiser dispatch
   const navigate = useNavigate();
-  const token = useSelector(state => state.auth.token);  
+  const token = useSelector(state => state.auth.token);
+  const userData = useSelector(state => state.auth.user);  // Récupérer les infos utilisateur depuis Redux
 
-  // Utilisation de useEffect pour récupérer les données de l'utilisateur
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (!token) {
@@ -29,7 +31,10 @@ function Users() {
         });
 
         const { firstName, lastName, userName } = response.data.body;
-        setUserData({ firstName, lastName, userName });
+
+        // Dispatcher l'action Redux pour sauvegarder les données utilisateur dans le store
+        dispatch(getUser(firstName, lastName, userName));
+
       } catch (error) {
         setError('Erreur lors de la récupération des données utilisateur.');
         navigate('/signin');
@@ -37,7 +42,7 @@ function Users() {
     };
 
     fetchUserData();
-  }, [navigate, token]);
+  }, [dispatch, navigate, token]);
 
   // Fonction pour activer le mode édition
   const handleEditName = () => {
@@ -67,35 +72,29 @@ function Users() {
         },
       });
 
-      setUserData(prevData => ({ ...prevData, userName: newNickname }));
+      // Mettre à jour le nom d'utilisateur dans Redux après la modification
+      dispatch(getUser(userData.firstName, userData.lastName, newNickname));
       setIsEditing(false);
+      setNewNickname('');
     } catch (error) {
       setError('Erreur lors de la mise à jour du pseudo.');
     }
   };
 
-  // Affichage des erreurs éventuelles
+
   if (error) {
     return <p>{error}</p>;
   }
 
-  // Affichage pendant le chargement des données utilisateur
+
   if (!userData) {
     return <p>Chargement des données utilisateur...</p>;
   }
 
-  // Rendu du composant
+
   return (
     <div>
-      <nav className="main-nav">
-        <div>
-          <Link className="main-nav-item" to="/user">
-            <i className="fa fa-user-circle"></i>
-            {userData.userName}
-          </Link>
-        
-        </div>
-      </nav>
+    
       <main className="main bg-dark">
         <div className="header">
           <h1>Welcome back<br />{userData.firstName} {userData.lastName}!</h1>

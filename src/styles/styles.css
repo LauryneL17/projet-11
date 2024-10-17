@@ -53,8 +53,16 @@
     
     .main-nav-item {
       text-decoration: none;
-      margin-right: 0.5rem;
+      margin-right: 2rem; /* Plus d'espace entre les éléments */
+      display: flex;
+      align-items: center;
     }
+    
+    
+    .main-nav-item svg {
+      margin-right: 10px; /* Espace entre l'icône et le nom d'utilisateur */
+    }
+    
     
     .main-nav-item:hover {
       text-decoration: underline;

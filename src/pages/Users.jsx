@@ -1,62 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';  
-import { getUser } from '../redux/action';  // Importer l'action getUser
+import { getUser } from '../redux/action';  
+import axios from 'axios'; // Import axios
 import '../styles/styles.css';
 
 function Users() {
   const [isEditing, setIsEditing] = useState(false);
   const [newNickname, setNewNickname] = useState('');
   const [error, setError] = useState('');
-  const dispatch = useDispatch();  // Initialiser dispatch
+  const dispatch = useDispatch();  
   const navigate = useNavigate();
   const token = useSelector(state => state.auth.token);
-  const userData = useSelector(state => state.auth.user);  // Récupérer les infos utilisateur depuis Redux
+  const userData = useSelector(state => state.auth.user);  // Get user info from Redux
 
-  // Utilisation de useEffect pour récupérer les données de l'utilisateur
+  // Effect to navigate to sign-in if no user data is found
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (!token) {
-        setError("Token non trouvé, veuillez vous reconnecter.");
-        navigate('/signin');
-        return;
-      }
+    if (!userData) {
+      setError("Aucune donnée utilisateur trouvée. Veuillez vous connecter.");
+      navigate('/signin');
+    }
+  }, [navigate, userData]);
 
-      try {
-        const response = await axios.post('http://localhost:3001/api/v1/user/profile', {}, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const { firstName, lastName, userName } = response.data.body;
-
-        // Dispatcher l'action Redux pour sauvegarder les données utilisateur dans le store
-        dispatch(getUser(firstName, lastName, userName));
-
-      } catch (error) {
-        setError('Erreur lors de la récupération des données utilisateur.');
-        navigate('/signin');
-      }
-    };
-
-    fetchUserData();
-  }, [dispatch, navigate, token]);
-
-  // Fonction pour activer le mode édition
+  // Function to activate edit mode
   const handleEditName = () => {
     setIsEditing(true);
     setNewNickname(userData?.userName || '');
   };
 
-  // Fonction pour annuler l'édition
+  // Function to cancel editing
   const handleCancel = () => {
     setIsEditing(false);
     setNewNickname('');
   };
 
-  // Fonction pour sauvegarder le nouveau pseudo
+  // Function to save the new nickname
   const handleSave = async () => {
     if (!token) {
       setError("Token non trouvé, veuillez vous reconnecter.");
@@ -72,7 +50,7 @@ function Users() {
         },
       });
 
-      // Mettre à jour le nom d'utilisateur dans Redux après la modification
+      // Update the username in Redux after modification
       dispatch(getUser(userData.firstName, userData.lastName, newNickname));
       setIsEditing(false);
       setNewNickname('');
@@ -81,27 +59,16 @@ function Users() {
     }
   };
 
-  // Affichage des erreurs éventuelles
   if (error) {
     return <p>{error}</p>;
   }
 
-  // Affichage pendant le chargement des données utilisateur
   if (!userData) {
     return <p>Chargement des données utilisateur...</p>;
   }
 
-  // Rendu du composant
   return (
     <div>
-      <nav className="main-nav">
-        <div>
-          <Link className="main-nav-item" to="/user">
-            <i className="fa fa-user-circle"></i>
-            {userData.userName}
-          </Link>
-        </div>
-      </nav>
       <main className="main bg-dark">
         <div className="header">
           <h1>Welcome back<br />{userData.firstName} {userData.lastName}!</h1>
@@ -122,7 +89,7 @@ function Users() {
         </div>
         <h2 className="sr-only">Accounts</h2>
 
-        {/* Comptes bancaires de l'utilisateur */}
+        {/* User's bank accounts */}
         <section className="account">
           <div className="account-content-wrapper">
             <h3 className="account-title">Argent Bank Checking (x8349)</h3>

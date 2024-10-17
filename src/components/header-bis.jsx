@@ -1,19 +1,20 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';  // Import de useNavigate pour la redirection
-import { logout } from '../redux/action';  // Assurez-vous que ce chemin est correct
+import { Link, useNavigate } from 'react-router-dom';
+import { logout } from '../redux/action';  
 import '../styles/styles.css';
 import logo from '../assets/logo-min.png';
 
 const Header = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();  // Initialisation de useNavigate pour la redirection
+  const navigate = useNavigate();  // Initialisation de useNavigate => redirection
   const token = useSelector((state) => state.auth.token);
+  const user = useSelector((state) => state.auth.user); 
 
   const handleLogout = () => {
-    dispatch(logout());  // Déconnexion via Redux
-    localStorage.removeItem('token');  // Suppression du token de localStorage
-    navigate('/signin');  // Redirection vers la page de connexion
+    dispatch(logout());  
+    localStorage.removeItem('token');  
+    navigate('/signin');  
   };
 
   return (
@@ -31,17 +32,28 @@ const Header = () => {
           />
           <span className="sr-only">Argent Bank</span>
         </Link>
+        <Link className="main-nav-item" to="/users">
+              <i className="fa fa-user-circle"></i>
+              {user ? user.userName : ''} {/* Assuming user.userName exists */}
+            </Link>
         {token ? (
-          <Link onClick={handleLogout} className="main-nav-item" to="#">
-            <i className="fa fa-user-circle"></i>
-            Sign Out
-          </Link>
+          <>
+            <span className="main-nav-item">
+              <i className="fa fa-user-circle"></i>
+              {user ? `${user.firstName} ${user.lastName}` : 'User'}
+            </span>
+            <Link onClick={handleLogout} className="main-nav-item" to="#">
+              <i className="fa fa-user-circle"></i>
+              Sign Out
+            </Link>
+          </>
         ) : (
           <Link className="main-nav-item" to="/signin">
             <i className="fa fa-user-circle"></i>
             Sign In
           </Link>
         )}
+
       </nav>
     </header>
   );

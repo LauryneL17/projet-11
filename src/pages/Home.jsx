@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";  // Importation de useSelector pour récupérer les données depuis Redux
+import { useSelector } from "react-redux";  
 import "../styles/styles.css";
 import chatIcon from "../assets/icon-chat-min.png";
 import moneyIcon from "../assets/icon-money-min.png";
@@ -15,7 +15,8 @@ function Home() {
           <section className="hero-content">
             <h2 className="sr-only">Promoted Content</h2>
             {user ? (  // Vérifie si l'utilisateur est connecté
-              <h2>Welcome back, {user.firstName}!</h2>  // Affiche le prénom de l'utilisateur connecté
+              <h2>Welcome back, {user.firstName} {user.lastName}!</h2>
+              
             ) : (
               <h2>Welcome to Argent Bank!</h2>  // Affichage par défaut si aucun utilisateur n'est connecté
             )}
